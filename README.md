@@ -1,7 +1,11 @@
-# README 
+# README
+
 ## Introduction
 
 Hi! This is a project I made as part of my ALevel Computer Science coursework, it acts as an investigation into three-dimensional computer graphics.
+
+<img src="./res/snap1.png" alt="GUI" width="500"/>
+<img src="./res/snap2.png" alt="GUI" width="500"/>
 
 ## Installation
 
