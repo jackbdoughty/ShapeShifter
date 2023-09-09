@@ -48,3 +48,5 @@ cd ../bin
 - The menu on the far left of the screen is used to control all the properties of the shape. It's best to explore all the options :).
 - Use `esc` or the exit button to leave the app.
 - Each axes is labelled with a colour. <span style="color: red">`x` is red</span>, <span style="color: green">`y` is green</span> and <span style="color: blue">`z` is blue</span>.
+
+View [my documentation](./res/Documentation.pdf) for a more in depth explanation as to how the program works and descriptions of each individual feature.
