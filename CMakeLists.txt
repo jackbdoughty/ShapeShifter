@@ -1,0 +1,522 @@
+cmake_minimum_required(VERSION 3.26)
+
+project(ShapeShifter)
+
+set(CMAKE_CXX_STANDARD 11)
+
+set (EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${EXECUTABLE_OUTPUT_PATH})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${EXECUTABLE_OUTPUT_PATH})
+
+file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
+if(EXISTS "${LOC_PATH}")
+    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
+endif()
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(libraries/include/glfw)
+
+find_package(OpenGL REQUIRED)
+
+include_directories(.)
+include_directories(libraries)
+include_directories(libraries/include)
+include_directories(libraries/include/glad)
+include_directories(libraries/include/glm)
+include_directories(libraries/include/glm/detail)
+include_directories(libraries/include/glm/ext)
+include_directories(libraries/include/glm/gtc)
+include_directories(libraries/include/glm/gtx)
+include_directories(libraries/include/glm/simd)
+include_directories(libraries/include/ImGui)
+include_directories(libraries/include/KHR)
+include_directories(libraries/include/stb)
+include_directories(libraries/lib)
+include_directories(src)
+include_directories(src/camera)
+include_directories(src/ib)
+include_directories(src/ImGui)
+include_directories(src/lighting)
+include_directories(src/mat-vec)
+include_directories(src/renderer)
+include_directories(src/shader)
+include_directories(src/shaders)
+include_directories(src/shapes)
+include_directories(src/va)
+include_directories(src/vb)
+include_directories(src/vbl)
+include_directories(src/window)
+
+add_executable(ShapeShifter
+        libraries/include/glad/glad.h
+        libraries/include/glm/detail/_features.hpp
+        libraries/include/glm/detail/_fixes.hpp
+        libraries/include/glm/detail/_noise.hpp
+        libraries/include/glm/detail/_swizzle.hpp
+        libraries/include/glm/detail/_swizzle_func.hpp
+        libraries/include/glm/detail/_vectorize.hpp
+        libraries/include/glm/detail/compute_common.hpp
+        libraries/include/glm/detail/compute_vector_relational.hpp
+        libraries/include/glm/detail/func_common.inl
+        libraries/include/glm/detail/func_common_simd.inl
+        libraries/include/glm/detail/func_exponential.inl
+        libraries/include/glm/detail/func_exponential_simd.inl
+        libraries/include/glm/detail/func_geometric.inl
+        libraries/include/glm/detail/func_geometric_simd.inl
+        libraries/include/glm/detail/func_integer.inl
+        libraries/include/glm/detail/func_integer_simd.inl
+        libraries/include/glm/detail/func_matrix.inl
+        libraries/include/glm/detail/func_matrix_simd.inl
+        libraries/include/glm/detail/func_packing.inl
+        libraries/include/glm/detail/func_packing_simd.inl
+        libraries/include/glm/detail/func_trigonometric.inl
+        libraries/include/glm/detail/func_trigonometric_simd.inl
+        libraries/include/glm/detail/func_vector_relational.inl
+        libraries/include/glm/detail/func_vector_relational_simd.inl
+        libraries/include/glm/detail/glm.cpp
+        libraries/include/glm/detail/qualifier.hpp
+        libraries/include/glm/detail/setup.hpp
+        libraries/include/glm/detail/type_float.hpp
+        libraries/include/glm/detail/type_half.hpp
+        libraries/include/glm/detail/type_half.inl
+        libraries/include/glm/detail/type_mat2x2.hpp
+        libraries/include/glm/detail/type_mat2x2.inl
+        libraries/include/glm/detail/type_mat2x3.hpp
+        libraries/include/glm/detail/type_mat2x3.inl
+        libraries/include/glm/detail/type_mat2x4.hpp
+        libraries/include/glm/detail/type_mat2x4.inl
+        libraries/include/glm/detail/type_mat3x2.hpp
+        libraries/include/glm/detail/type_mat3x2.inl
+        libraries/include/glm/detail/type_mat3x3.hpp
+        libraries/include/glm/detail/type_mat3x3.inl
+        libraries/include/glm/detail/type_mat3x4.hpp
+        libraries/include/glm/detail/type_mat3x4.inl
+        libraries/include/glm/detail/type_mat4x2.hpp
+        libraries/include/glm/detail/type_mat4x2.inl
+        libraries/include/glm/detail/type_mat4x3.hpp
+        libraries/include/glm/detail/type_mat4x3.inl
+        libraries/include/glm/detail/type_mat4x4.hpp
+        libraries/include/glm/detail/type_mat4x4.inl
+        libraries/include/glm/detail/type_mat4x4_simd.inl
+        libraries/include/glm/detail/type_quat.hpp
+        libraries/include/glm/detail/type_quat.inl
+        libraries/include/glm/detail/type_quat_simd.inl
+        libraries/include/glm/detail/type_vec1.hpp
+        libraries/include/glm/detail/type_vec1.inl
+        libraries/include/glm/detail/type_vec2.hpp
+        libraries/include/glm/detail/type_vec2.inl
+        libraries/include/glm/detail/type_vec3.hpp
+        libraries/include/glm/detail/type_vec3.inl
+        libraries/include/glm/detail/type_vec4.hpp
+        libraries/include/glm/detail/type_vec4.inl
+        libraries/include/glm/detail/type_vec4_simd.inl
+        libraries/include/glm/ext/matrix_clip_space.hpp
+        libraries/include/glm/ext/matrix_clip_space.inl
+        libraries/include/glm/ext/matrix_common.hpp
+        libraries/include/glm/ext/matrix_common.inl
+        libraries/include/glm/ext/matrix_double2x2.hpp
+        libraries/include/glm/ext/matrix_double2x2_precision.hpp
+        libraries/include/glm/ext/matrix_double2x3.hpp
+        libraries/include/glm/ext/matrix_double2x3_precision.hpp
+        libraries/include/glm/ext/matrix_double2x4.hpp
+        libraries/include/glm/ext/matrix_double2x4_precision.hpp
+        libraries/include/glm/ext/matrix_double3x2.hpp
+        libraries/include/glm/ext/matrix_double3x2_precision.hpp
+        libraries/include/glm/ext/matrix_double3x3.hpp
+        libraries/include/glm/ext/matrix_double3x3_precision.hpp
+        libraries/include/glm/ext/matrix_double3x4.hpp
+        libraries/include/glm/ext/matrix_double3x4_precision.hpp
+        libraries/include/glm/ext/matrix_double4x2.hpp
+        libraries/include/glm/ext/matrix_double4x2_precision.hpp
+        libraries/include/glm/ext/matrix_double4x3.hpp
+        libraries/include/glm/ext/matrix_double4x3_precision.hpp
+        libraries/include/glm/ext/matrix_double4x4.hpp
+        libraries/include/glm/ext/matrix_double4x4_precision.hpp
+        libraries/include/glm/ext/matrix_float2x2.hpp
+        libraries/include/glm/ext/matrix_float2x2_precision.hpp
+        libraries/include/glm/ext/matrix_float2x3.hpp
+        libraries/include/glm/ext/matrix_float2x3_precision.hpp
+        libraries/include/glm/ext/matrix_float2x4.hpp
+        libraries/include/glm/ext/matrix_float2x4_precision.hpp
+        libraries/include/glm/ext/matrix_float3x2.hpp
+        libraries/include/glm/ext/matrix_float3x2_precision.hpp
+        libraries/include/glm/ext/matrix_float3x3.hpp
+        libraries/include/glm/ext/matrix_float3x3_precision.hpp
+        libraries/include/glm/ext/matrix_float3x4.hpp
+        libraries/include/glm/ext/matrix_float3x4_precision.hpp
+        libraries/include/glm/ext/matrix_float4x2.hpp
+        libraries/include/glm/ext/matrix_float4x2_precision.hpp
+        libraries/include/glm/ext/matrix_float4x3.hpp
+        libraries/include/glm/ext/matrix_float4x3_precision.hpp
+        libraries/include/glm/ext/matrix_float4x4.hpp
+        libraries/include/glm/ext/matrix_float4x4_precision.hpp
+        libraries/include/glm/ext/matrix_int2x2.hpp
+        libraries/include/glm/ext/matrix_int2x2_sized.hpp
+        libraries/include/glm/ext/matrix_int2x3.hpp
+        libraries/include/glm/ext/matrix_int2x3_sized.hpp
+        libraries/include/glm/ext/matrix_int2x4.hpp
+        libraries/include/glm/ext/matrix_int2x4_sized.hpp
+        libraries/include/glm/ext/matrix_int3x2.hpp
+        libraries/include/glm/ext/matrix_int3x2_sized.hpp
+        libraries/include/glm/ext/matrix_int3x3.hpp
+        libraries/include/glm/ext/matrix_int3x3_sized.hpp
+        libraries/include/glm/ext/matrix_int3x4.hpp
+        libraries/include/glm/ext/matrix_int3x4_sized.hpp
+        libraries/include/glm/ext/matrix_int4x2.hpp
+        libraries/include/glm/ext/matrix_int4x2_sized.hpp
+        libraries/include/glm/ext/matrix_int4x3.hpp
+        libraries/include/glm/ext/matrix_int4x3_sized.hpp
+        libraries/include/glm/ext/matrix_int4x4.hpp
+        libraries/include/glm/ext/matrix_int4x4_sized.hpp
+        libraries/include/glm/ext/matrix_projection.hpp
+        libraries/include/glm/ext/matrix_projection.inl
+        libraries/include/glm/ext/matrix_relational.hpp
+        libraries/include/glm/ext/matrix_relational.inl
+        libraries/include/glm/ext/matrix_transform.hpp
+        libraries/include/glm/ext/matrix_transform.inl
+        libraries/include/glm/ext/matrix_uint2x2.hpp
+        libraries/include/glm/ext/matrix_uint2x2_sized.hpp
+        libraries/include/glm/ext/matrix_uint2x3.hpp
+        libraries/include/glm/ext/matrix_uint2x3_sized.hpp
+        libraries/include/glm/ext/matrix_uint2x4.hpp
+        libraries/include/glm/ext/matrix_uint2x4_sized.hpp
+        libraries/include/glm/ext/matrix_uint3x2.hpp
+        libraries/include/glm/ext/matrix_uint3x2_sized.hpp
+        libraries/include/glm/ext/matrix_uint3x3.hpp
+        libraries/include/glm/ext/matrix_uint3x3_sized.hpp
+        libraries/include/glm/ext/matrix_uint3x4.hpp
+        libraries/include/glm/ext/matrix_uint3x4_sized.hpp
+        libraries/include/glm/ext/matrix_uint4x2.hpp
+        libraries/include/glm/ext/matrix_uint4x2_sized.hpp
+        libraries/include/glm/ext/matrix_uint4x3.hpp
+        libraries/include/glm/ext/matrix_uint4x3_sized.hpp
+        libraries/include/glm/ext/matrix_uint4x4.hpp
+        libraries/include/glm/ext/matrix_uint4x4_sized.hpp
+        libraries/include/glm/ext/quaternion_common.hpp
+        libraries/include/glm/ext/quaternion_common.inl
+        libraries/include/glm/ext/quaternion_common_simd.inl
+        libraries/include/glm/ext/quaternion_double.hpp
+        libraries/include/glm/ext/quaternion_double_precision.hpp
+        libraries/include/glm/ext/quaternion_exponential.hpp
+        libraries/include/glm/ext/quaternion_exponential.inl
+        libraries/include/glm/ext/quaternion_float.hpp
+        libraries/include/glm/ext/quaternion_float_precision.hpp
+        libraries/include/glm/ext/quaternion_geometric.hpp
+        libraries/include/glm/ext/quaternion_geometric.inl
+        libraries/include/glm/ext/quaternion_relational.hpp
+        libraries/include/glm/ext/quaternion_relational.inl
+        libraries/include/glm/ext/quaternion_transform.hpp
+        libraries/include/glm/ext/quaternion_transform.inl
+        libraries/include/glm/ext/quaternion_trigonometric.hpp
+        libraries/include/glm/ext/quaternion_trigonometric.inl
+        libraries/include/glm/ext/scalar_common.hpp
+        libraries/include/glm/ext/scalar_common.inl
+        libraries/include/glm/ext/scalar_constants.hpp
+        libraries/include/glm/ext/scalar_constants.inl
+        libraries/include/glm/ext/scalar_int_sized.hpp
+        libraries/include/glm/ext/scalar_integer.hpp
+        libraries/include/glm/ext/scalar_integer.inl
+        libraries/include/glm/ext/scalar_packing.hpp
+        libraries/include/glm/ext/scalar_packing.inl
+        libraries/include/glm/ext/scalar_relational.hpp
+        libraries/include/glm/ext/scalar_relational.inl
+        libraries/include/glm/ext/scalar_uint_sized.hpp
+        libraries/include/glm/ext/scalar_ulp.hpp
+        libraries/include/glm/ext/scalar_ulp.inl
+        libraries/include/glm/ext/vector_bool1.hpp
+        libraries/include/glm/ext/vector_bool1_precision.hpp
+        libraries/include/glm/ext/vector_bool2.hpp
+        libraries/include/glm/ext/vector_bool2_precision.hpp
+        libraries/include/glm/ext/vector_bool3.hpp
+        libraries/include/glm/ext/vector_bool3_precision.hpp
+        libraries/include/glm/ext/vector_bool4.hpp
+        libraries/include/glm/ext/vector_bool4_precision.hpp
+        libraries/include/glm/ext/vector_common.hpp
+        libraries/include/glm/ext/vector_common.inl
+        libraries/include/glm/ext/vector_double1.hpp
+        libraries/include/glm/ext/vector_double1_precision.hpp
+        libraries/include/glm/ext/vector_double2.hpp
+        libraries/include/glm/ext/vector_double2_precision.hpp
+        libraries/include/glm/ext/vector_double3.hpp
+        libraries/include/glm/ext/vector_double3_precision.hpp
+        libraries/include/glm/ext/vector_double4.hpp
+        libraries/include/glm/ext/vector_double4_precision.hpp
+        libraries/include/glm/ext/vector_float1.hpp
+        libraries/include/glm/ext/vector_float1_precision.hpp
+        libraries/include/glm/ext/vector_float2.hpp
+        libraries/include/glm/ext/vector_float2_precision.hpp
+        libraries/include/glm/ext/vector_float3.hpp
+        libraries/include/glm/ext/vector_float3_precision.hpp
+        libraries/include/glm/ext/vector_float4.hpp
+        libraries/include/glm/ext/vector_float4_precision.hpp
+        libraries/include/glm/ext/vector_int1.hpp
+        libraries/include/glm/ext/vector_int1_sized.hpp
+        libraries/include/glm/ext/vector_int2.hpp
+        libraries/include/glm/ext/vector_int2_sized.hpp
+        libraries/include/glm/ext/vector_int3.hpp
+        libraries/include/glm/ext/vector_int3_sized.hpp
+        libraries/include/glm/ext/vector_int4.hpp
+        libraries/include/glm/ext/vector_int4_sized.hpp
+        libraries/include/glm/ext/vector_integer.hpp
+        libraries/include/glm/ext/vector_integer.inl
+        libraries/include/glm/ext/vector_packing.hpp
+        libraries/include/glm/ext/vector_packing.inl
+        libraries/include/glm/ext/vector_relational.hpp
+        libraries/include/glm/ext/vector_relational.inl
+        libraries/include/glm/ext/vector_uint1.hpp
+        libraries/include/glm/ext/vector_uint1_sized.hpp
+        libraries/include/glm/ext/vector_uint2.hpp
+        libraries/include/glm/ext/vector_uint2_sized.hpp
+        libraries/include/glm/ext/vector_uint3.hpp
+        libraries/include/glm/ext/vector_uint3_sized.hpp
+        libraries/include/glm/ext/vector_uint4.hpp
+        libraries/include/glm/ext/vector_uint4_sized.hpp
+        libraries/include/glm/ext/vector_ulp.hpp
+        libraries/include/glm/ext/vector_ulp.inl
+        libraries/include/glm/gtc/bitfield.hpp
+        libraries/include/glm/gtc/bitfield.inl
+        libraries/include/glm/gtc/color_space.hpp
+        libraries/include/glm/gtc/color_space.inl
+        libraries/include/glm/gtc/constants.hpp
+        libraries/include/glm/gtc/constants.inl
+        libraries/include/glm/gtc/epsilon.hpp
+        libraries/include/glm/gtc/epsilon.inl
+        libraries/include/glm/gtc/integer.hpp
+        libraries/include/glm/gtc/integer.inl
+        libraries/include/glm/gtc/matrix_access.hpp
+        libraries/include/glm/gtc/matrix_access.inl
+        libraries/include/glm/gtc/matrix_integer.hpp
+        libraries/include/glm/gtc/matrix_inverse.hpp
+        libraries/include/glm/gtc/matrix_inverse.inl
+        libraries/include/glm/gtc/matrix_transform.hpp
+        libraries/include/glm/gtc/matrix_transform.inl
+        libraries/include/glm/gtc/noise.hpp
+        libraries/include/glm/gtc/noise.inl
+        libraries/include/glm/gtc/packing.hpp
+        libraries/include/glm/gtc/packing.inl
+        libraries/include/glm/gtc/quaternion.hpp
+        libraries/include/glm/gtc/quaternion.inl
+        libraries/include/glm/gtc/quaternion_simd.inl
+        libraries/include/glm/gtc/random.hpp
+        libraries/include/glm/gtc/random.inl
+        libraries/include/glm/gtc/reciprocal.hpp
+        libraries/include/glm/gtc/reciprocal.inl
+        libraries/include/glm/gtc/round.hpp
+        libraries/include/glm/gtc/round.inl
+        libraries/include/glm/gtc/type_aligned.hpp
+        libraries/include/glm/gtc/type_precision.hpp
+        libraries/include/glm/gtc/type_precision.inl
+        libraries/include/glm/gtc/type_ptr.hpp
+        libraries/include/glm/gtc/type_ptr.inl
+        libraries/include/glm/gtc/ulp.hpp
+        libraries/include/glm/gtc/ulp.inl
+        libraries/include/glm/gtc/vec1.hpp
+        libraries/include/glm/gtx/associated_min_max.hpp
+        libraries/include/glm/gtx/associated_min_max.inl
+        libraries/include/glm/gtx/bit.hpp
+        libraries/include/glm/gtx/bit.inl
+        libraries/include/glm/gtx/closest_point.hpp
+        libraries/include/glm/gtx/closest_point.inl
+        libraries/include/glm/gtx/color_encoding.hpp
+        libraries/include/glm/gtx/color_encoding.inl
+        libraries/include/glm/gtx/color_space.hpp
+        libraries/include/glm/gtx/color_space.inl
+        libraries/include/glm/gtx/color_space_YCoCg.hpp
+        libraries/include/glm/gtx/color_space_YCoCg.inl
+        libraries/include/glm/gtx/common.hpp
+        libraries/include/glm/gtx/common.inl
+        libraries/include/glm/gtx/compatibility.hpp
+        libraries/include/glm/gtx/compatibility.inl
+        libraries/include/glm/gtx/component_wise.hpp
+        libraries/include/glm/gtx/component_wise.inl
+        libraries/include/glm/gtx/dual_quaternion.hpp
+        libraries/include/glm/gtx/dual_quaternion.inl
+        libraries/include/glm/gtx/easing.hpp
+        libraries/include/glm/gtx/easing.inl
+        libraries/include/glm/gtx/euler_angles.hpp
+        libraries/include/glm/gtx/euler_angles.inl
+        libraries/include/glm/gtx/extend.hpp
+        libraries/include/glm/gtx/extend.inl
+        libraries/include/glm/gtx/extended_min_max.hpp
+        libraries/include/glm/gtx/extended_min_max.inl
+        libraries/include/glm/gtx/exterior_product.hpp
+        libraries/include/glm/gtx/exterior_product.inl
+        libraries/include/glm/gtx/fast_exponential.hpp
+        libraries/include/glm/gtx/fast_exponential.inl
+        libraries/include/glm/gtx/fast_square_root.hpp
+        libraries/include/glm/gtx/fast_square_root.inl
+        libraries/include/glm/gtx/fast_trigonometry.hpp
+        libraries/include/glm/gtx/fast_trigonometry.inl
+        libraries/include/glm/gtx/float_notmalize.inl
+        libraries/include/glm/gtx/functions.hpp
+        libraries/include/glm/gtx/functions.inl
+        libraries/include/glm/gtx/gradient_paint.hpp
+        libraries/include/glm/gtx/gradient_paint.inl
+        libraries/include/glm/gtx/handed_coordinate_space.hpp
+        libraries/include/glm/gtx/handed_coordinate_space.inl
+        libraries/include/glm/gtx/hash.hpp
+        libraries/include/glm/gtx/hash.inl
+        libraries/include/glm/gtx/integer.hpp
+        libraries/include/glm/gtx/integer.inl
+        libraries/include/glm/gtx/intersect.hpp
+        libraries/include/glm/gtx/intersect.inl
+        libraries/include/glm/gtx/io.hpp
+        libraries/include/glm/gtx/io.inl
+        libraries/include/glm/gtx/log_base.hpp
+        libraries/include/glm/gtx/log_base.inl
+        libraries/include/glm/gtx/matrix_cross_product.hpp
+        libraries/include/glm/gtx/matrix_cross_product.inl
+        libraries/include/glm/gtx/matrix_decompose.hpp
+        libraries/include/glm/gtx/matrix_decompose.inl
+        libraries/include/glm/gtx/matrix_factorisation.hpp
+        libraries/include/glm/gtx/matrix_factorisation.inl
+        libraries/include/glm/gtx/matrix_interpolation.hpp
+        libraries/include/glm/gtx/matrix_interpolation.inl
+        libraries/include/glm/gtx/matrix_major_storage.hpp
+        libraries/include/glm/gtx/matrix_major_storage.inl
+        libraries/include/glm/gtx/matrix_operation.hpp
+        libraries/include/glm/gtx/matrix_operation.inl
+        libraries/include/glm/gtx/matrix_query.hpp
+        libraries/include/glm/gtx/matrix_query.inl
+        libraries/include/glm/gtx/matrix_transform_2d.hpp
+        libraries/include/glm/gtx/matrix_transform_2d.inl
+        libraries/include/glm/gtx/mixed_product.hpp
+        libraries/include/glm/gtx/mixed_product.inl
+        libraries/include/glm/gtx/norm.hpp
+        libraries/include/glm/gtx/norm.inl
+        libraries/include/glm/gtx/normal.hpp
+        libraries/include/glm/gtx/normal.inl
+        libraries/include/glm/gtx/normalize_dot.hpp
+        libraries/include/glm/gtx/normalize_dot.inl
+        libraries/include/glm/gtx/number_precision.hpp
+        libraries/include/glm/gtx/number_precision.inl
+        libraries/include/glm/gtx/optimum_pow.hpp
+        libraries/include/glm/gtx/optimum_pow.inl
+        libraries/include/glm/gtx/orthonormalize.hpp
+        libraries/include/glm/gtx/orthonormalize.inl
+        libraries/include/glm/gtx/perpendicular.hpp
+        libraries/include/glm/gtx/perpendicular.inl
+        libraries/include/glm/gtx/polar_coordinates.hpp
+        libraries/include/glm/gtx/polar_coordinates.inl
+        libraries/include/glm/gtx/projection.hpp
+        libraries/include/glm/gtx/projection.inl
+        libraries/include/glm/gtx/quaternion.hpp
+        libraries/include/glm/gtx/quaternion.inl
+        libraries/include/glm/gtx/range.hpp
+        libraries/include/glm/gtx/raw_data.hpp
+        libraries/include/glm/gtx/raw_data.inl
+        libraries/include/glm/gtx/rotate_normalized_axis.hpp
+        libraries/include/glm/gtx/rotate_normalized_axis.inl
+        libraries/include/glm/gtx/rotate_vector.hpp
+        libraries/include/glm/gtx/rotate_vector.inl
+        libraries/include/glm/gtx/scalar_multiplication.hpp
+        libraries/include/glm/gtx/scalar_relational.hpp
+        libraries/include/glm/gtx/scalar_relational.inl
+        libraries/include/glm/gtx/spline.hpp
+        libraries/include/glm/gtx/spline.inl
+        libraries/include/glm/gtx/std_based_type.hpp
+        libraries/include/glm/gtx/std_based_type.inl
+        libraries/include/glm/gtx/string_cast.hpp
+        libraries/include/glm/gtx/string_cast.inl
+        libraries/include/glm/gtx/texture.hpp
+        libraries/include/glm/gtx/texture.inl
+        libraries/include/glm/gtx/transform.hpp
+        libraries/include/glm/gtx/transform.inl
+        libraries/include/glm/gtx/transform2.hpp
+        libraries/include/glm/gtx/transform2.inl
+        libraries/include/glm/gtx/type_aligned.hpp
+        libraries/include/glm/gtx/type_aligned.inl
+        libraries/include/glm/gtx/type_trait.hpp
+        libraries/include/glm/gtx/type_trait.inl
+        libraries/include/glm/gtx/vec_swizzle.hpp
+        libraries/include/glm/gtx/vector_angle.hpp
+        libraries/include/glm/gtx/vector_angle.inl
+        libraries/include/glm/gtx/vector_query.hpp
+        libraries/include/glm/gtx/vector_query.inl
+        libraries/include/glm/gtx/wrap.hpp
+        libraries/include/glm/gtx/wrap.inl
+        libraries/include/glm/simd/common.h
+        libraries/include/glm/simd/exponential.h
+        libraries/include/glm/simd/geometric.h
+        libraries/include/glm/simd/integer.h
+        libraries/include/glm/simd/matrix.h
+        libraries/include/glm/simd/neon.h
+        libraries/include/glm/simd/packing.h
+        libraries/include/glm/simd/platform.h
+        libraries/include/glm/simd/trigonometric.h
+        libraries/include/glm/simd/vector_relational.h
+        libraries/include/glm/common.hpp
+        libraries/include/glm/exponential.hpp
+        libraries/include/glm/ext.hpp
+        libraries/include/glm/fwd.hpp
+        libraries/include/glm/geometric.hpp
+        libraries/include/glm/glm.hpp
+        libraries/include/glm/integer.hpp
+        libraries/include/glm/mat2x2.hpp
+        libraries/include/glm/mat2x3.hpp
+        libraries/include/glm/mat2x4.hpp
+        libraries/include/glm/mat3x2.hpp
+        libraries/include/glm/mat3x3.hpp
+        libraries/include/glm/mat3x4.hpp
+        libraries/include/glm/mat4x2.hpp
+        libraries/include/glm/mat4x3.hpp
+        libraries/include/glm/mat4x4.hpp
+        libraries/include/glm/matrix.hpp
+        libraries/include/glm/packing.hpp
+        libraries/include/glm/trigonometric.hpp
+        libraries/include/glm/vec2.hpp
+        libraries/include/glm/vec3.hpp
+        libraries/include/glm/vec4.hpp
+        libraries/include/glm/vector_relational.hpp
+        libraries/include/ImGui/imconfig.h
+        libraries/include/ImGui/imgui.h
+        libraries/include/ImGui/imgui_impl_glfw.h
+        libraries/include/ImGui/imgui_impl_opengl3.h
+        libraries/include/ImGui/imgui_impl_opengl3_loader.h
+        libraries/include/ImGui/imgui_internal.h
+        libraries/include/ImGui/imgui_markdown.h
+        libraries/include/ImGui/imstb_rectpack.h
+        libraries/include/ImGui/imstb_textedit.h
+        libraries/include/ImGui/imstb_truetype.h
+        libraries/include/KHR/khrplatform.h
+        libraries/include/stb/stb_image.h
+        src/camera/camera.cpp
+        src/camera/camera.h
+        src/ib/ib.cpp
+        src/ib/ib.h
+        src/ImGui/imgui.cpp
+        src/ImGui/imgui_demo.cpp
+        src/ImGui/imgui_draw.cpp
+        src/ImGui/imgui_impl_glfw.cpp
+        src/ImGui/imgui_impl_opengl3.cpp
+        src/ImGui/imgui_tables.cpp
+        src/ImGui/imgui_widgets.cpp
+        src/ImGui/myImGuiTheme.h
+        src/lighting/lighting.h
+        src/mat-vec/mat-vec.cpp
+        src/mat-vec/mat-vec.h
+        src/renderer/renderer.cpp
+        src/renderer/renderer.h
+        src/shader/shader.cpp
+        src/shader/shader.h
+        src/shaders/shape/fragment.shader
+        src/shaders/shape/vertex.shader
+        src/shapes/shapes.cpp
+        src/shapes/shapes.h
+        src/va/va.cpp
+        src/va/va.h
+        src/vb/vb.cpp
+        src/vb/vb.h
+        src/vbl/vbl.cpp
+        src/vbl/vbl.h
+        src/window/window.cpp
+        src/window/window.h
+        src/glad.c
+        src/main.cpp
+)
+
+target_link_libraries(ShapeShifter glfw)
+target_link_libraries(ShapeShifter OpenGL::GL)
